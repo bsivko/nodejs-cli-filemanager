@@ -1,7 +1,7 @@
 import { state } from "./../state.js";
 import { messanger } from "./../messanger.js";
 import fs from 'fs';
-import path from "path";
+import path, { isAbsolute } from "path";
 import { OperationError } from "./../errors.js";
 import { rl } from "./../rl.js";
 import crypto from "crypto";
@@ -141,11 +141,15 @@ class FileOperations {
           }
     }
 
-    async cp(fromname, toname) {
+    async cp(file, dir) {
 
         try {     
-            const inFullName = path.join(state.currentDir, fromname);
-            const outFullName = path.join(state.currentDir, toname);
+            const dirContext = isAbsolute(dir)
+                ? dir
+                : path.join(state.currentDir, dir);
+
+            const inFullName = path.join(state.currentDir, file);
+            const outFullName = path.join(dirContext, file);
 
             // Check in-path presence.
             fs.access(inFullName, err => {
@@ -180,8 +184,12 @@ class FileOperations {
 
     async mv(file, dir) {
         try {
+            const dirContext = isAbsolute(dir)
+                ? dir
+                : path.join(state.currentDir, dir);
+
             const inFullName = path.join(state.currentDir, file);
-            const outFullName = path.join(state.currentDir, dir, file);
+            const outFullName = path.join(dirContext, file);
 
             // Check in-path presence.
             fs.access(inFullName, err => {

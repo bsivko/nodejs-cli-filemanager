@@ -1,7 +1,7 @@
 import { state } from "./../state.js";
 import { messanger } from "./../messanger.js";
 import fs from 'fs';
-import path from "path";
+import path, { isAbsolute } from "path";
 import { OperationError } from "./../errors.js";
 import { rl } from "./../rl.js";
 import zlib from "zlib";
@@ -22,8 +22,12 @@ class CompressOperations {
 
     async compress(filename, dir) {
         try {     
+            const dirContext = isAbsolute(dir)
+                ? dir
+                : path.join(state.currentDir, dir);
+
             const inFullName = path.join(state.currentDir, filename);
-            const outFullName = path.join(state.currentDir, dir, filename);
+            const outFullName = path.join(dirContext, filename);
 
             // Check in-path presence.
             fs.access(inFullName, err => {
@@ -71,8 +75,13 @@ class CompressOperations {
 
     async decompress(filename, dir) {
         try {     
+
+            const dirContext = isAbsolute(dir)
+                ? argumentDirectory
+                : path.join(state.currentDir, dir);
+
             const inFullName = path.join(state.currentDir, filename);
-            const outFullName = path.join(state.currentDir, dir, filename);
+            const outFullName = path.join(dirContext, filename);
 
             // Check in-path presence.
             fs.access(inFullName, err => {

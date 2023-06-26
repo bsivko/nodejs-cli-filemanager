@@ -34,7 +34,10 @@ class DirOperations {
         fs.readdir(state.currentDir, { withFileTypes: true }, (err, files) => {
             if (err) {
                 // Smth scary happened.
-                throw new OperationError();
+                {
+                    rl.catched(new OperationError());
+                    return;
+                }
             } 
 
             const result = files.sort().map((file) => {
@@ -71,12 +74,13 @@ class DirOperations {
         // Check for directory.
         await fs.stat(newDir, (err, stats) => {
             if (err) {
-                // Smth scary happened.
-                throw new OperationError();
+                rl.catched(new OperationError());
+                return;
             }             
 
             if (!stats.isDirectory()) {
-                throw new OperationError();
+                rl.catched(new OperationError());
+                return;
             }        
     
             state.setNewDir(newDir);

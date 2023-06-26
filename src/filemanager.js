@@ -39,15 +39,7 @@ const start_app = () => {
             rl.updatePrompt();
         }
         catch(err) {
-            if (err instanceof FileManagerError) {
-                console.log(err.message);                
-            } else {
-                console.log(operationErrorMessage);
-                throw err;
-            }
-            messanger.printCurrentDirectory();
-
-            rl.updatePrompt();
+            rl.catched(err);
         }        
       });    
 };

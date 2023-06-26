@@ -1,8 +1,7 @@
 import { InputError } from "../errors.js";
 import { osOperations } from "./os.js";
 import { dirOperations } from "./dir.js";
-import { FileManagerError, operationErrorMessage } from "./../errors.js";
-import { messanger } from "./../messanger.js";
+import { fileOperations } from "./file.js";
 import { rl } from "./../rl.js";
 
 class CmdProcessor {    
@@ -14,21 +13,22 @@ class CmdProcessor {
         }
 
         try {
-            const proceed = await dirOperations.handle(args);
-            if (proceed)
-                return;
+            {
+                const proceed = await dirOperations.handle(args);
+                if (proceed)
+                    return;
+            }
+
+            {
+                const proceed = await fileOperations.handle(args);
+                if (proceed)
+                    return;
+            }            
 
             throw new InputError();
         }
         catch(err) {
-            if (err instanceof FileManagerError) {
-                console.log(err.message);                
-            } else {
-                console.log(operationErrorMessage);                
-            }
-            messanger.printCurrentDirectory();
-            
-            rl.updatePrompt();
+            rl.catched(err);
         }
     }
 }  

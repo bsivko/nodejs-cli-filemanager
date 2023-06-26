@@ -9,7 +9,6 @@ class Messanger {
 
     printCantGoUpRoot() {
         process.stdout.write(`You can't go up out of the start directory\n`);
-        this.printCurrentDirectory();
     }
 
     printOnExit() {

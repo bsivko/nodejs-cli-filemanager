@@ -1,8 +1,12 @@
 const usernameArgName = 'username'
 
 class State {
+    constructor() {
+        this.username = 'Incognito';
+        this.currentDir = '';  
+    }
+
     applyArgs(args) {
-      this.username = 'Incognito';
 
       for (let [key, value] of args) {
         if (key === usernameArgName)

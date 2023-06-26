@@ -15,7 +15,7 @@ class FileOperations {
             await this.add(args[1]);
         } 
         else if (args[0] == 'rn' && (args.length === 3)) {
-            await this.add(args[1], args[2]);
+            await this.rn(args[1], args[2]);
         } 
         else if (args[0] == 'cp' && (args.length === 3)) {
             await this.cp(args[1], args[2]);
@@ -103,7 +103,38 @@ class FileOperations {
     }
 
     async rn(oldname, newname) {
+        try {     
+            const oldFullName = path.join(state.currentDir, oldname);
+            const newFullName = path.join(state.currentDir, newname);
+     
+            fs.access(oldFullName, fs.F_OK, (err) => {                
+                if (err) {
+                    rl.catched(new OperationError());
+                    return;
+                }
+
+                fs.access(newFullName, fs.F_OK, (err) => {                
+                    if (!err) {
+                        rl.catched(new OperationError());
+                        return;
+                    }
+
+                    fs.rename(oldFullName, newFullName, (err) => {
+                        if (err) {
+                            rl.catched(new OperationError());
+                            return;
+                        } 
         
+                        // File renamed.
+
+                        messanger.printCurrentDirectory();
+                    }); 
+                    
+                });
+            });
+          } catch(err) {
+            rl.catched(err);
+          }
     }
 
     async cp(fromname, toname) {

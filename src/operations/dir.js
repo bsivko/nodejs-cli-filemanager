@@ -47,10 +47,10 @@ class DirOperations {
             // Sort by folder/file and name.
             const sorted = result.sort(function(a, b) {
                 if (a.IsFile && !b.IsFile)
-                    return -1;
+                    return 1;
     
                 if (!a.IsFile && b.IsFile)
-                    return 1;
+                    return -1;
                 
                 if (a.Name < b.Name)
                     return -1;

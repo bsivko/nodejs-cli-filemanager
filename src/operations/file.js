@@ -35,6 +35,44 @@ class FileOperations {
         try {     
             const fullname = path.join(state.currentDir, filename);
       
+            // Check for directory.
+            await fs.stat(fullname, (err, stats) => {
+                try {
+
+                    if (err) {
+                        rl.catched(new OperationError());
+                        return;
+                    }             
+
+                    if (stats.isDirectory()) {
+                        rl.catched(new OperationError());
+                        return;
+                    }
+                    
+                    const stream = fs.createReadStream(fullname, "utf8");
+
+                    stream.on("data", function(chunk){ 
+                        process.stdout.write(chunk);
+                    });
+
+                    stream.on("end", () => {
+                        process.stdout.write("\n");
+                        messanger.printCurrentDirectory();
+                    });
+
+                } catch {
+                    rl.catched(new OperationError());
+                }
+            }); 
+          } catch(err) {
+            rl.catched(err);
+          }
+    }
+
+    async add(filename) {
+        try {     
+            const fullname = path.join(state.currentDir, filename);
+      
             fs.access(fullname, fs.F_OK, (err) => {                
                 if (!err) {
                     rl.catched(new OperationError());
@@ -62,10 +100,6 @@ class FileOperations {
           } catch(err) {
             rl.catched(err);
           }
-    }
-
-    async add(filename) {
-        
     }
 
     async rn(oldname, newname) {

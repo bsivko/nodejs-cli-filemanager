@@ -150,24 +150,23 @@ class FileOperations {
                     return;
                 }
 
-            // in-path found.
-            // Check out-path ansence.
-            fs.access(outFullName, err => {
-                if (!err) {
-                    rl.catched(new OperationError());
-                    return;
-                }
-
-                fs.copyFile(inFullName, outFullName, (err) => {
-                    if (err) {
+                // in-path found.
+                // Check out-path ansence.
+                fs.access(outFullName, err => {
+                    if (!err) {
                         rl.catched(new OperationError());
                         return;
                     }
-                    else {               
-                        // 'file' file is copied.
+
+                    const readStream = fs.createReadStream(inFullName, "utf-8");
+                    const writeStream = fs.createWriteStream(outFullName);
+                    readStream.pipe(writeStream);
+            
+                    readStream.on("end", () => {
+                        process.stdout.write("\n");
                         messanger.printCurrentDirectory();
-                    }
-                  });
+                    });
+                    
                 }) // out-path
             }); // in-path    
         } catch(err) {

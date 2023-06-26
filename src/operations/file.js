@@ -175,7 +175,52 @@ class FileOperations {
     }
 
     async mv(file, dir) {
+        try {
+            const inFullName = path.join(state.currentDir, file);
+            const outFullName = path.join(state.currentDir, dir, file);
+
+            console.log("in:" + inFullName);
+            console.log("out:" + outFullName);
+
+            // Check in-path presence.
+            fs.access(inFullName, err => {
+                if (err) {
+                    rl.catched(new OperationError());
+                    return;
+                }
+
+                // in-path found.
+                // Check out-path ansence.
+                fs.access(outFullName, err => {
+                    if (!err) {
+                        rl.catched(new OperationError());
+                        return;
+                    }
+
+                    const readStream = fs.createReadStream(inFullName, "utf-8");
+                    const writeStream = fs.createWriteStream(outFullName);
+                    readStream.pipe(writeStream);
+            
+                    readStream.on("end", () => {
+                        process.stdout.write("\n");
+
+                        fs.unlink(inFullName, (err) => {
+                            if (err) {
+                                rl.catched(new OperationError());
+                                return;
+                            } 
         
+                            // File deleted.
+        
+                            messanger.printCurrentDirectory();
+                        });
+                    });
+                    
+                }) // out-path
+            }); // in-path    
+        } catch(err) {
+            rl.catched(err);
+        }    
     }    
     
     async rm(filename) {

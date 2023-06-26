@@ -1,0 +1,15 @@
+{
+  "name": "node-nodejs-filemanager-cli",
+  "version": "1.0.0",
+  "description": "This repository is a solution for File Manager Task of RS School, 2023-Q2",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/filemanager.js --"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "license": "ISC",
+  "author": "Boris Sivko"
+}

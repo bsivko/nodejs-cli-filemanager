@@ -1,7 +1,7 @@
 import { state } from "./../state.js";
 import { InputError } from "./../errors.js";
 import { messanger } from "./../messanger.js";
-import { cpus, EOL } from 'os';
+import os, { EOL } from 'os';
 
 class OsOperations {    
 
@@ -10,7 +10,17 @@ class OsOperations {
             messanger.printTextResult(JSON.stringify(EOL) + "\n");
         } 
         else if (action == '--cpus') {
-            messanger.printTextResult(cpus().length + "\n");
+            let cpu_s = os.cpus();
+            let text = "CORES:" + cpu_s.length + "\n";            
+
+            let n = 0;
+            cpu_s.forEach(element => {
+                n++;
+                text += "cpu " + n + ":";                    
+                text += element.model.toString() + "\n";
+            });
+
+            messanger.printTextResult(text + "\n");
         }  
         else if (action == '--homedir') {
             messanger.printTextResult(state.rootDir + "\n");

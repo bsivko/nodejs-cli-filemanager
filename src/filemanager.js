@@ -1,9 +1,9 @@
-import { createInterface } from "readline";
-
-import { parseArgs } from "./args_parser.js";
+import { parseStartArgs, parseCmdArgs, consoleLogArgs } from "./args_parser.js";
 import { state } from "./state.js";
 import { messanger } from "./messanger.js";
 import * as readline from 'node:readline';
+import { cmdProcessor } from "./operations/cmd_processor.js";
+import { FileManagerError, operationErrorMessage } from "./errors.js";
 
 // One root of start.
 const start_app = () => {
@@ -15,7 +15,7 @@ const start_app = () => {
         prompt: "> ",
     });
 
-    state.applyArgs(parseArgs(process.argv));    
+    state.applyArgs(parseStartArgs(process.argv));    
 
     messanger.printWelcome();
 
@@ -25,13 +25,33 @@ const start_app = () => {
 
     // Loop
     rl.on("line", (line) => {
-        const value = line.trim();
-  
-        if (value.includes(".exit")) {
-          process.exit();
-        }
 
-        this.rl.prompt(true);
+        try {
+            const text = line.trim();
+    
+            const cmdArgs = parseCmdArgs(text);
+
+            consoleLogArgs(cmdArgs);
+
+            if (cmdArgs.length === 0) {
+                messanger.printErrorAtInput();
+            }
+            else {
+                if (cmdArgs[0] == ".exit")
+                    process.exit();
+                
+                cmdProcessor.handle(cmdArgs);
+            }
+
+        }
+        catch(err) {
+            if (err instanceof FileManagerError) {
+                console.log(err.message);
+            } else {
+                console.log(operationErrorMessage);                
+            }            
+        }
+        rl.prompt(true);
       });    
 };
 

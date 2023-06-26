@@ -1,5 +1,5 @@
 // Parse cmd args by '--name=value' format.
-function parseArgs(args) {
+function parseStartArgs(args) {
 
     const prefix = '--'
     
@@ -7,7 +7,7 @@ function parseArgs(args) {
 
     args.forEach((val) => {
 
-        // Does it has the prefix and '='?
+        // Does it have the prefix and '='?
         if (val.startsWith(prefix) && val.includes('=')) {
             // Yes, prefix is detected
             const vals = val.split("=");
@@ -20,10 +20,22 @@ function parseArgs(args) {
     return result;
 };
 
+// Parse line commands.
+function parseCmdArgs(text) {
+    let result = text.split(' ');
+    return result;
+};
+
 function consoleLogArgs(args) {
-    for (let [key, value] of args) {
-        console.log(key + " = " + value);
+    if (args instanceof Map)
+        for (let [key, value] of args) {
+            console.log(key + " = " + value);
+        }
+    else if (args instanceof Array) {
+        args.forEach(element => {
+            console.log(element);
+        });
     }
 }
 
-export { parseArgs, consoleLogArgs }
+export { parseStartArgs, consoleLogArgs, parseCmdArgs }

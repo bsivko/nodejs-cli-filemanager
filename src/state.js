@@ -1,9 +1,15 @@
+import { homedir } from "os";
+import { messanger } from "./messanger.js";
+
 const usernameArgName = 'username'
 
 class State {
     constructor() {
         this.username = 'Incognito';
-        this.currentDir = '';  
+
+        let homeDir = homedir();
+        this.currentDir = homeDir;
+        this.rootDir = homeDir;
     }
 
     applyArgs(args) {
@@ -11,6 +17,16 @@ class State {
       for (let [key, value] of args) {
         if (key === usernameArgName)
             this.username = value;
+        }
+    }
+
+    setNewDir(newDir) {
+        if (newDir.length < this.rootDir) {
+            messanger.printCantGoUpRoot();
+            throw InputError();
+        }
+        else {
+            this.currentDir = newDir;
         }
     }
 }  

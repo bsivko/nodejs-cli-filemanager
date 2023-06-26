@@ -180,7 +180,35 @@ class FileOperations {
     }    
     
     async rm(filename) {
-        
+
+        try {     
+            const fullName = path.join(state.currentDir, filename);
+
+
+            // check file presence
+            fs.access(fullName, fs.F_OK, (err) => {
+                if (err) {
+                    rl.catched(new OperationError());
+                    return;
+                }      
+            
+                // Let's delete it.
+
+                fs.unlink(fullName, (err) => {
+                    if (err) {
+                        rl.catched(new OperationError());
+                        return;
+                    } 
+
+                    // File deleted.
+
+                    messanger.printCurrentDirectory();
+                });
+            });
+
+        } catch(err) {
+            rl.catched(err);
+        }    
     }
 }  
   

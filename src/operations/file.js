@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from "path";
 import { OperationError } from "./../errors.js";
 import { rl } from "./../rl.js";
+import crypto from "crypto";
 
 class FileOperations {    
 
@@ -25,6 +26,9 @@ class FileOperations {
         } 
         else if (args[0] == 'rm' && (args.length === 2)) {
             await this.rm(args[1]);
+        } 
+        else if (args[0] == 'hash' && (args.length === 2)) {
+            await this.hash(args[1]);
         } 
         else return false;
 
@@ -253,6 +257,42 @@ class FileOperations {
         } catch(err) {
             rl.catched(err);
         }    
+    }
+
+    async hash(filename) {
+        try {     
+            const fullname = path.join(state.currentDir, filename);
+      
+            // Check for directory.
+            await fs.stat(fullname, (err, stats) => {
+                try {
+
+                    if (err) {
+                        rl.catched(new OperationError());
+                        return;
+                    }             
+
+                    if (stats.isDirectory()) {
+                        rl.catched(new OperationError());
+                        return;
+                    }
+
+                    const stream = fs.createReadStream(fullname,  "utf-8");
+                    const hash = crypto.createHash('sha256').setEncoding('hex');
+                    stream.pipe(hash).pipe(process.stdout);
+
+                    stream.on("end", () => {
+                        process.stdout.write("\n");
+                        messanger.printCurrentDirectory();
+                    });         
+                                  
+                } catch {
+                    rl.catched(new OperationError());
+                }
+            }); 
+          } catch(err) {
+            rl.catched(err);
+          }
     }
 }  
   

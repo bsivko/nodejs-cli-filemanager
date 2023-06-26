@@ -138,7 +138,41 @@ class FileOperations {
     }
 
     async cp(fromname, toname) {
-        
+
+        try {     
+            const inFullName = path.join(state.currentDir, fromname);
+            const outFullName = path.join(state.currentDir, toname);
+
+            // Check in-path presence.
+            fs.access(inFullName, err => {
+                if (err) {
+                    rl.catched(new OperationError());
+                    return;
+                }
+
+            // in-path found.
+            // Check out-path ansence.
+            fs.access(outFullName, err => {
+                if (!err) {
+                    rl.catched(new OperationError());
+                    return;
+                }
+
+                fs.copyFile(inFullName, outFullName, (err) => {
+                    if (err) {
+                        rl.catched(new OperationError());
+                        return;
+                    }
+                    else {               
+                        // 'file' file is copied.
+                        messanger.printCurrentDirectory();
+                    }
+                  });
+                }) // out-path
+            }); // in-path    
+        } catch(err) {
+            rl.catched(err);
+        }    
     }
 
     async mv(file, dir) {

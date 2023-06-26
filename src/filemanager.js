@@ -1,19 +1,12 @@
 import { parseStartArgs, parseCmdArgs, consoleLogArgs } from "./args_parser.js";
 import { state } from "./state.js";
-import { messanger } from "./messanger.js";
-import * as readline from 'node:readline';
+import { rl } from "./rl.js";
 import { cmdProcessor } from "./operations/cmd_processor.js";
 import { FileManagerError, operationErrorMessage } from "./errors.js";
+import { messanger } from "./messanger.js";
 
 // One root of start.
 const start_app = () => {
-
-    // cmd interface
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: "> ",
-    });
 
     state.applyArgs(parseStartArgs(process.argv));    
 
@@ -21,10 +14,10 @@ const start_app = () => {
 
     process.on("exit", () => messanger.printOnExit(state.username));
 
-    rl.prompt(true);
+    rl.updatePrompt();
 
     // Loop
-    rl.on("line", (line) => {
+    rl.o.on("line", (line) => {
 
         try {
             const text = line.trim();
@@ -43,16 +36,19 @@ const start_app = () => {
                 cmdProcessor.handle(cmdArgs);
             }
 
+            rl.updatePrompt();
         }
         catch(err) {
             if (err instanceof FileManagerError) {
                 console.log(err.message);                
             } else {
-                console.log(operationErrorMessage);                
+                console.log(operationErrorMessage);
+                throw err;
             }
             messanger.printCurrentDirectory();
-        }
-        rl.prompt(true);
+
+            rl.updatePrompt();
+        }        
       });    
 };
 

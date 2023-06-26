@@ -1,4 +1,5 @@
 import { state } from "./state.js";
+import { rl } from "./rl.js";
 
 class Messanger {    
 
@@ -17,6 +18,7 @@ class Messanger {
 
     printCurrentDirectory() {
         process.stdout.write(`You are currently in ${state.currentDir}\n`);
+        rl.updatePrompt();
     }
 
     printTextResult(text) {

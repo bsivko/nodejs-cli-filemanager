@@ -21,7 +21,7 @@ class State {
     }
 
     setNewDir(newDir) {
-        if (newDir.length < this.rootDir) {
+        if (newDir.length < this.rootDir.length) {
             messanger.printCantGoUpRoot();
             throw InputError();
         }

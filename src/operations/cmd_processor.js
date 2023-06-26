@@ -2,6 +2,7 @@ import { InputError } from "../errors.js";
 import { osOperations } from "./os.js";
 import { dirOperations } from "./dir.js";
 import { fileOperations } from "./file.js";
+import { compressOperations } from "./compress.js";
 import { rl } from "./../rl.js";
 
 class CmdProcessor {    
@@ -23,7 +24,13 @@ class CmdProcessor {
                 const proceed = await fileOperations.handle(args);
                 if (proceed)
                     return;
-            }            
+            }
+
+            {
+                const proceed = await compressOperations.handle(args);
+                if (proceed)
+                    return;
+            }
 
             throw new InputError();
         }

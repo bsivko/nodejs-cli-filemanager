@@ -183,9 +183,6 @@ class FileOperations {
             const inFullName = path.join(state.currentDir, file);
             const outFullName = path.join(state.currentDir, dir, file);
 
-            console.log("in:" + inFullName);
-            console.log("out:" + outFullName);
-
             // Check in-path presence.
             fs.access(inFullName, err => {
                 if (err) {

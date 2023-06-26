@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "file:start": "node src/filemanager.js -- --username=my_username"
+    "start": "node src/filemanager.js --"
   },
   "keywords": [
     "nodejs"

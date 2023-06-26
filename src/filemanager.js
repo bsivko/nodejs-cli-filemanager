@@ -31,7 +31,7 @@ const start_app = () => {
     
             const cmdArgs = parseCmdArgs(text);
 
-            consoleLogArgs(cmdArgs);
+            // consoleLogArgs(cmdArgs);
 
             if (cmdArgs.length === 0) {
                 messanger.printErrorAtInput();
@@ -46,10 +46,11 @@ const start_app = () => {
         }
         catch(err) {
             if (err instanceof FileManagerError) {
-                console.log(err.message);
+                console.log(err.message);                
             } else {
                 console.log(operationErrorMessage);                
-            }            
+            }
+            messanger.printCurrentDirectory();
         }
         rl.prompt(true);
       });    

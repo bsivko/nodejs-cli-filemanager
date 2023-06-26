@@ -11,11 +11,6 @@ class Messanger {
         this.printCurrentDirectory();
     }
 
-    printErrorAtInput() {
-        process.stdout.write(`Invalid input\n`);
-        this.printCurrentDirectory();
-    }
-
     printOnExit() {
         process.stdout.write(`\nThank you for using File Manager, ${state.username}, goodbye!\n`);
     }
@@ -26,6 +21,12 @@ class Messanger {
 
     printTextResult(text) {
         process.stdout.write(text);
+        this.printCurrentDirectory();
+    }
+
+    printLS(table) {
+        process.stdout.write("\n");
+        console.table(table);
         this.printCurrentDirectory();
     }
 }  

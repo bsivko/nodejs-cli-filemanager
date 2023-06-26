@@ -1,13 +1,20 @@
 import { InputError } from "../errors.js";
 import { osOperations } from "./os.js";
+import { dirOperations } from "./dir.js";
 
 class CmdProcessor {    
 
-    handle(args) {
+    async handle(args) {
         if ((args[0] === 'os') && (args.length == 2)) {
             osOperations.handle(args[1]);
-        } else 
-            throw new InputError();
+            return;
+        }
+
+        const proceed = await dirOperations.handle(args);
+        if (proceed)
+            return;
+
+        throw new InputError();
     }
 }  
   

@@ -42,15 +42,15 @@ class DirOperations {
             } 
 
             const result = files.sort().map((file) => {
-                return { Name: file.name, IsFile: file.isFile()};
+                return { Name: file.name, Type: file.isFile() ? "file" : "directory"};
               });
     
             // Sort by folder/file and name.
             const sorted = result.sort(function(a, b) {
-                if (a.IsFile && !b.IsFile)
+                if (a.Type > b.Type)
                     return 1;
     
-                if (!a.IsFile && b.IsFile)
+                if (a.Type < b.Type)
                     return -1;
                 
                 if (a.Name < b.Name)
